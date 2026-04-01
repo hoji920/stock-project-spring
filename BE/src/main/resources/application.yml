@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: stock-project
+  profiles:
+    active: local
+
+logging:
+  level:
+    org.hibernate.SQL: info
+
+jasypt:
+  encryptor:
+    password: ${secretKey}
+    bean: jasyptStringEncryptor
