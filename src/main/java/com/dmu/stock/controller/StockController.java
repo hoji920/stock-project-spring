@@ -25,7 +25,12 @@ public class StockController {
     }
     @GetMapping("/news/{stockCode}")
     public ResponseEntity<ApiResponse<List<String>>> getStockNews(@PathVariable String stockCode){
-        List<String> stockNews = stockService.getStockNews(stockCode);
+        List<String> stockNews = stockService.getNewsByName(stockCode);
+        return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,stockNews));
+    }
+    @GetMapping("/news/search")
+    public ResponseEntity<ApiResponse<List<String>>> getStockNews(@RequestParam String query, @RequestParam int display){
+        List<String> stockNews = stockService.getNews(query,display);
         return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,stockNews));
     }
 }

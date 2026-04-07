@@ -21,7 +21,13 @@ spring:
 //이거는 맘대로
 server:
   port: 8082
+
 hantu:
   appkey: ****
   appsecret: ****
+
+naver:
+client:
+id: *****
+secret: *****
   

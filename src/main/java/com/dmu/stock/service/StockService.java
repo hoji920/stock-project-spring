@@ -24,8 +24,12 @@ public class StockService {
         HantuDto.PriceResponse stockPrice = hantuClient.getStockPrice(stockCode, validToken);
         return stockPrice;
     }
-    public List<String> getStockNews(String stockCode){
-        List<String> urls = naverNewsClient.searchNewsUrls(stockCode);
+    public List<String> getNewsByName(String stockCode){
+        List<String> urls = naverNewsClient.searchNewsName(stockCode);
+        return urls;
+    }
+    public List<String> getNews(String query, int amount){
+        List<String> urls = naverNewsClient.searchNews(query,amount,"sim");
         return urls;
     }
 }
