@@ -23,25 +23,25 @@ public class HantuClient {
     String appSecret;
 
     // HantuClient.java 내부
-    public String getAccessToken() {
-        log.info("한투 API 토큰 발급 요청 중--");
-
-        Map<String, String> body = new HashMap<>();
-        body.put("grant_type", "client_credentials");
-        body.put("appkey", appKey);
-        body.put("appsecret", appSecret);
-
-        return webClient.post()
-                .uri("https://openapi.koreainvestment.com:9443/oauth2/tokenP")
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(HantuDto.TokenResponse.class)
-                .map(res -> {
-                    log.info("토큰 발급 성공! 유효시간: {}초", res.getExpires_in());
-                    return res.getAccess_token();
-                })
-                .block(); // 테스트 단계에선 결과를 바로 확인하기 위해 block() 사용
-    }
+//    public String getAccessToken() {
+//        log.info("한투 API 토큰 발급 요청 중--");
+//
+//        Map<String, String> body = new HashMap<>();
+//        body.put("grant_type", "client_credentials");
+//        body.put("appkey", appKey);
+//        body.put("appsecret", appSecret);
+//
+//        return webClient.post()
+//                .uri("https://openapi.koreainvestment.com:9443/oauth2/tokenP")
+//                .bodyValue(body)
+//                .retrieve()
+//                .bodyToMono(HantuDto.TokenResponse.class)
+//                .map(res -> {
+//                    log.info("토큰 발급 성공! 유효시간: {}초", res.getExpires_in());
+//                    return res.getAccess_token();
+//                })
+//                .block(); // 테스트 단계에선 결과를 바로 확인하기 위해 block() 사용
+//    }
     // [2] 현재가 조회하기 (삼성전자 종목번호: 005930)
     public HantuDto.PriceResponse getStockPrice(String stockCode, String token) {
         return webClient.get()
@@ -66,21 +66,21 @@ public class HantuClient {
     }
 
     // 테스트용: 서버 시작하자마자 실행됨
-    @EventListener(ApplicationReadyEvent.class)
-    public void init() {
-        try {
-            log.info("============== 테스트 시작 ==============");
-            String token = getAccessToken();
-            log.info("받아온 토큰 확인: {}", token);
-
-            if (token != null) {
-                // 삼성전자(005930) 현재가 조회 테스트
-                HantuDto.PriceResponse price = getStockPrice("005930", token);
-                log.info("삼성전자 현재가: {}원", price.getOutput().getStck_prpr());
-            }
-            log.info("============== 테스트 종료 ==============");
-        } catch (Exception e) {
-            log.error("테스트 중 에러 발생: ", e);
-        }
-    }
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void init() {
+//        try {
+//            log.info("============== 테스트 시작 ==============");
+//            String token = getAccessToken();
+//            log.info("받아온 토큰 확인: {}", token);
+//
+//            if (token != null) {
+//                // 삼성전자(005930) 현재가 조회 테스트
+//                HantuDto.PriceResponse price = getStockPrice("005930", token);
+//                log.info("삼성전자 현재가: {}원", price.getOutput().getStck_prpr());
+//            }
+//            log.info("============== 테스트 종료 ==============");
+//        } catch (Exception e) {
+//            log.error("테스트 중 에러 발생: ", e);
+//        }
+//    }
 }
