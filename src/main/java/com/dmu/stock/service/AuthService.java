@@ -44,7 +44,6 @@ public class AuthService {
 
         log.info("한투 API 토큰 갱신 중...");
 
-        // 지호님이 짠 WebClient 로직 실행
         HantuDto.TokenResponse res = webClient.post()
                 .uri("https://openapi.koreainvestment.com:9443/oauth2/tokenP")
                 .bodyValue(body)
