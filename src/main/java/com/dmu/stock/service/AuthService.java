@@ -26,7 +26,10 @@ public class AuthService {
     private String accessToken; // 메모리에 토큰 저장
     private LocalDateTime expiryTime; // 만료 시간 체크용
 
-    // 다른 서비스들이 호출할 메소드
+    /**
+     * 한투 토큰 있는지 확인 후 없으면 생성 메서드 실행
+     * @return
+     */
     public String getValidToken() {
         // 토큰이 없거나, 만료시간이 1분 남았을 때 새로 갱신
         if (accessToken == null || LocalDateTime.now().isAfter(expiryTime.minusMinutes(1))) {
@@ -35,6 +38,9 @@ public class AuthService {
         return accessToken;
     }
 
+    /**
+     * 한투 토큰 생성
+     */
     private void refreshAccessToken() {
         // 요청 바디(Body) 생성
         Map<String, String> body = new HashMap<>();
@@ -52,7 +58,7 @@ public class AuthService {
                 .block();
 
         this.accessToken = res.getAccess_token();
-        log.info("토큰 발급 성공! 유효시간: {}초", res.getExpires_in());
+        log.info("토큰 발급 성공 . . . 유효시간: {}초", res.getExpires_in());
         // 유효 시간을 계산해서 저장 (보통 86400초 등)
         this.expiryTime = LocalDateTime.now().plusSeconds(res.getExpires_in());
     }

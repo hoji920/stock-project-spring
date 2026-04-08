@@ -51,6 +51,7 @@ public class NaverNewsClient {
         // URL(link)만 리스트로 뽑아서 반환
         return response.getItems().stream()
                 .map(NaverNewsResponseDto.NaverNewsItem::getLink)
+                .filter(link -> !link.contains("video") && !link.contains("tv.naver.com"))
                 .collect(Collectors.toList());
     }
     /**
@@ -85,6 +86,7 @@ public class NaverNewsClient {
         // URL(link)만 리스트로 뽑아서 반환
         return response.getItems().stream()
                 .map(NaverNewsResponseDto.NaverNewsItem::getLink)
+                .filter(link -> !link.contains("video") && !link.contains("tv.naver.com"))
                 .collect(Collectors.toList());
     }
 }

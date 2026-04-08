@@ -39,7 +39,7 @@ public class HantuClient {
                 .header("appkey", appKey)
                 .header("appsecret", appSecret)
                 .header("tr_id", "FHKST01010100") // 현재가 조회용 ID
-                .header("custtype", "P")
+                .header("custtype", "P") //개인 회원
                 .retrieve()
                 .bodyToMono(HantuDto.PriceResponse.class)
                 .block();

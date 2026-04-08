@@ -1,12 +1,18 @@
 package com.dmu.stock.service;
 
+import com.dmu.stock.client.fastapi.FastApiClient;
 import com.dmu.stock.client.hantu.HantuClient;
 import com.dmu.stock.client.hantu.HantuDto;
 import com.dmu.stock.client.naver.NaverNewsClient;
 import com.dmu.stock.client.naver.NaverNewsResponseDto;
+import com.dmu.stock.client.naver.NewsAnalysisRequestDto;
+import com.dmu.stock.config.WebClientConfig;
+import com.dmu.stock.dto.NodeStockRequestDto;
+import com.dmu.stock.dto.StockAnalysisRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -18,18 +24,41 @@ public class StockService {
     private final HantuClient hantuClient;
     private final AuthService authService;
     private final NaverNewsClient naverNewsClient;
+    private final FastApiClient fastApiClient;
 
+    /**
+     * 단순 주식 가격 및 정보 반환(한투 API)
+     * @param stockCode
+     * @return
+     */
     public HantuDto.PriceResponse getStockInfo(String stockCode){
         String validToken = authService.getValidToken();
         HantuDto.PriceResponse stockPrice = hantuClient.getStockPrice(stockCode, validToken);
         return stockPrice;
     }
-    public List<String> getNewsByName(String stockCode){
-        List<String> urls = naverNewsClient.searchNewsName(stockCode);
-        return urls;
-    }
-    public List<String> getNews(String query, int amount){
-        List<String> urls = naverNewsClient.searchNews(query,amount,"sim");
-        return urls;
+
+    /**
+     * FastAPI에게 주식 가격 추이 분석 요청
+     * @param requestDto
+     * @return
+     */
+    public Mono<String> getStockAnalysis(NodeStockRequestDto requestDto){
+        StockAnalysisRequestDto stockAnalysisRequestDto;
+        if(requestDto.isOverseas()){
+            stockAnalysisRequestDto = StockAnalysisRequestDto.builder()
+                    .ticker(requestDto.getCode())
+                    .build();
+        }else{
+            stockAnalysisRequestDto = StockAnalysisRequestDto.builder()
+                    .stockCode(requestDto.getCode())
+                    .build();
+        }
+
+        Mono<String> response = fastApiClient.fastapiWebClient().post()
+                .uri("/api/v1/StockAnalysis")
+                .bodyValue(stockAnalysisRequestDto)
+                .retrieve()
+                .bodyToMono(String.class);
+        return response;
     }
 }

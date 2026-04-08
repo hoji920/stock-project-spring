@@ -4,12 +4,16 @@ import com.dmu.stock.client.hantu.HantuDto;
 import com.dmu.stock.client.naver.NaverNewsResponseDto;
 import com.dmu.stock.common.ApiResponse;
 import com.dmu.stock.common.SuccessType;
+import com.dmu.stock.dto.NodeStockRequestDto;
 import com.dmu.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/stock")
@@ -18,19 +22,28 @@ public class StockController {
 
     private final StockService stockService;
 
+    /**
+     * 단순 주식 가격 및 정보 반환(한투 API)
+     * @param stockCode
+     * @return
+     */
     @GetMapping("/{stockCode}")
     public ResponseEntity<ApiResponse<HantuDto.PriceResponse>> getStockInfo(@PathVariable String stockCode){
         HantuDto.PriceResponse stockInfo = stockService.getStockInfo(stockCode);
         return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,stockInfo));
     }
-    @GetMapping("/news/{stockCode}")
-    public ResponseEntity<ApiResponse<List<String>>> getStockNews(@PathVariable String stockCode){
-        List<String> stockNews = stockService.getNewsByName(stockCode);
-        return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,stockNews));
+    /**
+     * FastAPI에게 주식 가격 추이 분석 요청
+     * @param requestDto
+     * @return
+     */
+    @GetMapping("/analyze")
+    public Mono<ResponseEntity<ApiResponse<String>>> getStockAnalysis(@RequestBody NodeStockRequestDto requestDto){
+        return stockService.getStockAnalysis(requestDto) // Mono<String>이 넘어옴
+                .map(summary -> ResponseEntity.ok(
+                        ApiResponse.success(SuccessType.INQUERY_SUCCESS, summary)
+                ));
+
     }
-    @GetMapping("/news/search")
-    public ResponseEntity<ApiResponse<List<String>>> getStockNews(@RequestParam String query, @RequestParam int display){
-        List<String> stockNews = stockService.getNews(query,display);
-        return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,stockNews));
-    }
+
 }
