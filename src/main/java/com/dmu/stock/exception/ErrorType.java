@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorType implements ErrorCode {
     MEMBER_NOT_FOUND("M404", HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    STOCK_NOT_FOUND("S404", HttpStatus.NOT_FOUND, "관심주식이 존재하지 않습니다"),
     CHECK_MEMBER_FAIL("CM404", HttpStatus.NOT_FOUND, "이름과 이메일을 확인해 주세요."),
     INVALID_ACCESS_TOKEN("AT401", HttpStatus.UNAUTHORIZED, "유효하지 않은 Access Token입니다."),
     INVALID_REFRESH_TOKEN("RT401", HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),

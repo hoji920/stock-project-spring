@@ -11,7 +11,6 @@ import lombok.*;
 @Getter
 @Builder
 public class StockResponseDto {
-    private Long id;            // DB에서 생성된 고유 번호
     private String stockCode;   // 저장된 종목
     private double avgPrice;    // 평단가
     private double quantity;    // 수량

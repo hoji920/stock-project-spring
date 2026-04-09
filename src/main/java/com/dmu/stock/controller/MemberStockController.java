@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/members/stocks")
 @RequiredArgsConstructor
@@ -25,8 +27,9 @@ public class MemberStockController {
         StockResponseDto stockResponseDto = memberStockService.saveMemberStock(requestDto);
         return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,stockResponseDto));
     }
-    @GetMapping
-    public ResponseEntity<ApiResponse<?>> getMemberStock(@RequestBody StockRequestDto requestDto){
-        return null;
+    @GetMapping("/{memberId}")
+    public ResponseEntity<ApiResponse<List<StockResponseDto>>> getMemberStock(@PathVariable String memberId){
+        List<StockResponseDto> getStockList = memberStockService.getMemberStock(memberId);
+        return ResponseEntity.ok(ApiResponse.success(SuccessType.INQUERY_SUCCESS,getStockList));
     }
 }
